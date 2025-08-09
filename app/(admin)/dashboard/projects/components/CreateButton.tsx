@@ -45,6 +45,7 @@ export const CreateButton = () => {
             form.append("description", description);
             await mutateAsync(form).then(() => {
               queryClient.invalidateQueries({ queryKey: ["projects"] });
+              setDescription("");
               setIsOpen(false);
             });
           }}
