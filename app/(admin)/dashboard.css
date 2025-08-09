@@ -1,0 +1,41 @@
+main {
+  padding: 1rem;
+}
+
+.custom-scroll-area {
+  width: 100%;
+  height: 300px; /* أو حسب الحاجة */
+  overflow: auto;
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: rgba(100, 100, 100, 0.5) transparent; /* Firefox */
+  -webkit-overflow-scrolling: touch; /* للسلاسة في التمرير على iOS */
+}
+
+/* للمتصفحات التي تدعم Webkit (Chrome, Safari, Edge) */
+.custom-custom-scroll-area::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.custom-scroll-area::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scroll-area::-webkit-scrollbar-thumb {
+  background-color: rgba(100, 100, 100, 0.5);
+  border-radius: 4px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+  transition: background-color 0.3s ease;
+}
+
+.custom-scroll-area::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(100, 100, 100, 0.8);
+}
+
+[contenteditable="true"][data-placeholder]:empty::before {
+  content: attr(data-placeholder);
+  color: #9ca3af; /* Tailwind gray-400 */
+  position: absolute;
+  pointer-events: none;
+}
