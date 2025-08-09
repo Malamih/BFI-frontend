@@ -61,6 +61,9 @@ export const CreateBlog = () => {
     try {
       await mutateAsync(formData);
       setOpen(false);
+      setSelectedWriter("");
+      setSelectedCategory("");
+      setBlogBody("");
       queryClient.invalidateQueries({ queryKey: ["blogs"] });
     } catch (err) {
       // الخطأ يعرضه hook useCreateBlog في error
