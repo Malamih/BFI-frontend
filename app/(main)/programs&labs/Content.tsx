@@ -10,7 +10,7 @@ export const Content = () => {
     <>
       <Loader hide={!isFetching} />
       <Container className="min-h-[calc(100vh-var(--header-height))] pt-24 flex justify-center z-10 relative">
-        <section>
+        <section className="flex flex-col gap-4">
           {data?.payload?.map((program) => {
             return (
               <Link key={program?._id} href={`/programs&labs/${program?._id}`}>
