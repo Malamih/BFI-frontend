@@ -55,7 +55,7 @@ export const Content = () => {
         />
         <div className="btn flex flex-wrap gap-2">
           {/* Categories */}
-          <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+          {/* <Select value={selectedCategory} onValueChange={setSelectedCategory}>
             <SelectTrigger className="border-gray-500 rounded-sm w-48">
               <SelectValue placeholder="Filter By Category" />
             </SelectTrigger>
@@ -67,10 +67,9 @@ export const Content = () => {
                 </SelectItem>
               ))}
             </SelectContent>
-          </Select>
-
+          </Select> */}
           {/* Writers */}
-          <Select value={selectedWriter} onValueChange={setSelectedWriter}>
+          {/* <Select value={selectedWriter} onValueChange={setSelectedWriter}>
             <SelectTrigger className="border-gray-500 rounded-sm w-48">
               <SelectValue placeholder="Filter By Writer" />
             </SelectTrigger>
@@ -82,8 +81,7 @@ export const Content = () => {
                 </SelectItem>
               ))}
             </SelectContent>
-          </Select>
-
+          </Select> */}
           <CreateCategory />
           <CreateWriter />
           <CreateBlog />
