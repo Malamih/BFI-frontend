@@ -8,12 +8,14 @@ import { Fundations } from "./Fundations";
 import { ResourcesAndIndustry } from "./ResourcesAndIndustry";
 import { useGetPages } from "@/services/page-content";
 import { HomePage } from "@/types/pages";
+import { Loader } from "@/components/Loader";
 
 export const Content = () => {
-  const { data } = useGetPages({ name: "home" });
+  const { data, isFetching } = useGetPages({ name: "home" });
   const sections = data?.payload[0]?.sections as HomePage["sections"];
   return (
     <main className="page">
+      <Loader hide={!isFetching} />
       <Hero section={sections?.hero} />
       <Intro section={sections?.intro} />
       <CannesEvent section={sections?.bfiCannes} />

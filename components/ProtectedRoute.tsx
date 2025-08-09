@@ -4,7 +4,7 @@ import { useCheckAuth } from "@/services/auth";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
-export const ProtectedRout = ({ children }: { children: React.ReactNode }) => {
+export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const [canLoad, setCanLoad] = useState(false);
   const { mutate, error } = useCheckAuth(() => {
     setCanLoad(true);

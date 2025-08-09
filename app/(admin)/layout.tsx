@@ -1,5 +1,5 @@
 import "./dashboard.css";
-import { ProtectedRout } from "@/components/ProtectedRoute";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
 import React from "react";
 import { Sidebar } from "./components/Sidebar";
 
@@ -9,11 +9,11 @@ interface Props {
 
 export default function AdminLayout({ children }: Props) {
   return (
-    <ProtectedRout>
+    <ProtectedRoute>
       <div className="min-h-screen bg-black text-white">
         <Sidebar />
         <div className="ms-[var(--sidebar-width)]">{children}</div>
       </div>
-    </ProtectedRout>
+    </ProtectedRoute>
   );
 }

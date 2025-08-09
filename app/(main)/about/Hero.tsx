@@ -20,7 +20,7 @@ export const Hero = ({ section }: { section: HeroSection }) => {
     return words.join(" ");
   };
   return (
-    <section className="h-[calc(100vh-var(--header-height))] flex justify-center flex-col">
+    <section className="min-h-[calc(100vh-var(--header-height))] pt-6 flex justify-center flex-col">
       <Container className="flex-[1] flex items-center justify-between gap-40">
         <div className="w-full max-w-2xl max-md:text-center">
           <h1
@@ -61,7 +61,7 @@ export const Hero = ({ section }: { section: HeroSection }) => {
             src={section?.image || "/about/hero.webp"}
             alt="image"
             fill
-            className="object-cover"
+            className="object-cover rounded-3xl"
           />
         </div>
       </Container>

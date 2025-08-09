@@ -275,7 +275,7 @@ export const VimeoModalPlayer: React.FC<VimeoModalPlayerProps> = ({
 
         <DialogContent
           className={cn(
-            "max-w-4xl w-[95vw] p-0 bg-transparent border-none",
+            "max-w-4xl min-w-[45vw] w-[95vw] p-0 bg-transparent border-none",
             "data-[state=open]:animate-in data-[state=closed]:animate-out",
             "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
             "data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
@@ -294,8 +294,6 @@ export const VimeoModalPlayer: React.FC<VimeoModalPlayerProps> = ({
           </div>
         </DialogContent>
       </Dialog>
-
-      {/* Children content (the actual content behind the trigger) */}
     </div>
   );
 };

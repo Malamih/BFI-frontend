@@ -6,12 +6,14 @@ import { Layer } from "@/components/ui/Layer";
 import { MailIcon, MapPinIcon, PinIcon } from "lucide-react";
 import { useGetPages } from "@/services/page-content";
 import { ContactPage } from "@/types/pages";
+import { Loader } from "@/components/Loader";
 
 export const Content = () => {
-  const { data } = useGetPages({ name: "contact" });
+  const { data, isFetching } = useGetPages({ name: "contact" });
   const sections = data?.payload[0]?.sections as ContactPage["sections"];
   return (
     <section className="min-h-[calc(100vh-var(--header-height))] max-lg:items-center items-center relative overflow-hidden flex flex-col justify-center">
+      <Loader hide={!isFetching} />
       <div className="absolute top-0 end-0 w-[55%] h-full rounded-bl-[10rem] overflow-hidden">
         <Layer className="opacity-[91%] z-[1]" />
         <Image

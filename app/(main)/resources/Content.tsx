@@ -1,6 +1,7 @@
 "use client";
 
 import Container from "@/components/Container";
+import { Loader } from "@/components/Loader";
 import { Button } from "@/components/ui/button";
 import { Layer } from "@/components/ui/Layer";
 import { useGetPages } from "@/services/page-content";
@@ -31,10 +32,11 @@ export const Content = () => {
       Contact Us
     </a>
   `;
-  const { data } = useGetPages({ name: "resources" });
+  const { data, isFetching } = useGetPages({ name: "resources" });
   const page = data?.payload[0] as ResourcesPage;
   return (
     <main className="relative py-20">
+      <Loader hide={!isFetching} />
       <Container className="flex">
         <Image
           fill

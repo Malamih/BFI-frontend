@@ -106,8 +106,8 @@ export const CorePillars = ({
                     pillar.icon
                   )}
                 </div>
-                <h6 className="font-semibold mb-2">{pillar.title}</h6>
-                <p className="font-normal text-xs">{pillar.description}</p>
+                <h6 className="font-semibold mb-2 text-base">{pillar.title}</h6>
+                <p className="font-normal text-sm">{pillar.description}</p>
               </li>
             );
           })}
