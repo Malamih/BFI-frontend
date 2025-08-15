@@ -5,7 +5,9 @@ import Link from "next/link";
 import { useGetBlogs } from "@/services/blogs";
 
 export const Blogs = () => {
-  const { data } = useGetBlogs({ query: { limit: 3 } });
+  const { data } = useGetBlogs({
+    query: { limit: 3, selected_fields: "_id,title,thumbnail,body" },
+  });
   return (
     <section className="my-8">
       <Container className="flex flex-col items-center">

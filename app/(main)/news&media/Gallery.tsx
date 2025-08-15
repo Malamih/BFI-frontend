@@ -8,7 +8,9 @@ import Link from "next/link";
 import React from "react";
 
 export default function MasonryEffect() {
-  const { data } = useGetBlogs({ query: { limit: 13 } });
+  const { data } = useGetBlogs({
+    query: { limit: 13, selected_fields: "video,_id,thumbnail.secure_url" },
+  });
   return (
     <section>
       <Container>
@@ -25,12 +27,13 @@ export default function MasonryEffect() {
                 </div>
               )}
               <Link href={`/news&media/blogs/${blog?._id}`}>
-                <img
+                <Image
                   src={blog?.thumbnail?.secure_url}
                   width={1000}
                   height={1000}
                   className="h-[183px] w-auto object-cover"
                   alt={`Image ${i + 1}`}
+                  unoptimized
                 />
               </Link>
             </div>

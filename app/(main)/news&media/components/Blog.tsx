@@ -12,12 +12,13 @@ export const Blog = ({
 }) => {
   return (
     <div className="w-full flex flex-col flex-[1] rounded-xl overflow-hidden min-w-xs max-w-3xl">
-      <img
+      <Image
         src={blogData?.thumbnail?.secure_url}
         width={1000}
         height={1000}
         className="w-full h-[260px] object-cover rounded-xl mb-5"
         alt="thumbnail"
+        unoptimized
       />
       <h4 className="font-semibold text-2xl mb-2 flex-[1]">
         {blogData?.title}
