@@ -42,7 +42,6 @@ export const HeroSection = ({
 
       const public_id = extractPublicId(section?.image as string);
       public_id && (await deleteFromCloudinary({ public_id }));
-      console.log(public_id);
       uploadToCloudinary(formData)
         .then(async (res) => {
           const sections = {

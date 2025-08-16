@@ -1,6 +1,8 @@
 import {
+  AppleIcon,
   Contact,
   Factory,
+  FlaskConical,
   Folders,
   Gavel,
   Handshake,
@@ -28,6 +30,11 @@ export const groups = [
         name: "About",
         path: "/dashboard/pages/about",
         icon: <Info width={linkIconWidth} />,
+      },
+      {
+        name: "Programs And Labs",
+        path: "/dashboard/pages/programs-and-labs",
+        icon: <FlaskConical width={linkIconWidth} />,
       },
       {
         name: "News And Media",

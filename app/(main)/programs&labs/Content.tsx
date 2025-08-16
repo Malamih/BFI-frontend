@@ -1,13 +1,29 @@
 "use client";
 import Container from "@/components/Container";
 import { Loader } from "@/components/Loader";
+import { Layer } from "@/components/ui/Layer";
+import { useGetPages } from "@/services/page-content";
 import { useGetPrograms } from "@/services/programs";
+import { ProgramsAndLabsPage } from "@/types/pages";
+import Image from "next/image";
 import Link from "next/link";
 
 export const Content = () => {
   const { data, isFetching } = useGetPrograms({ query: {} });
+  const { data: page, isFetching: fetchingPage } = useGetPages({
+    name: "programsAndLabs",
+  });
+  const sections = page?.payload[0]
+    ?.sections as ProgramsAndLabsPage["sections"];
   return (
     <>
+      <Image
+        src={sections?.image || "/contact/hero.webp"}
+        className="object-cover z-[1]"
+        fill
+        alt="hero-image"
+      />
+      <Layer className="opacity-90 z-[2]" />
       <Loader hide={!isFetching} />
       <Container className="min-h-[calc(100vh-var(--header-height))] pt-24 flex justify-center z-10 relative">
         <section className="flex flex-col gap-4">

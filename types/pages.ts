@@ -223,6 +223,12 @@ interface ResourcesPage {
   sections: ResourcesSections;
 }
 
+export interface ProgramsAndLabsPage {
+  _id: string;
+  pageName: "programsAndLabs";
+  sections: { image: string };
+}
+
 // Union type for all pages
 type BFIPage =
   | AboutPage
@@ -230,7 +236,8 @@ type BFIPage =
   | HomePage
   | IraqiIndustryGuidePage
   | NewsAndMediaPage
-  | ResourcesPage;
+  | ResourcesPage
+  | ProgramsAndLabsPage;
 
 // API response type
 interface BFIApiResponse {
