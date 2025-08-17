@@ -17,7 +17,7 @@ export const About = ({
       <Container className="flex gap-16">
         <div className="w-fit max-sm:hidden">
           <Image
-            src={"/about/fast-impact.webp"}
+            src={section?.image || "/about/fast-impact.webp"}
             width={467}
             height={470}
             alt="fast impact"

@@ -29,6 +29,7 @@ export const Footer = () => {
                 <li key={i}>
                   <Link
                     href={link.path}
+                    target="_blank"
                     className="p-2 w-10 h-10 flex items-center justify-center"
                   >
                     {link.icon}

@@ -30,7 +30,7 @@ export const Content = () => {
           {data?.payload?.map((program) => {
             return (
               <Link key={program?._id} href={`/programs&labs/${program?._id}`}>
-                <div className="program z-10 relative px-4 py-2 bg-white rounded-lg font-medium">
+                <div className="program text-center z-10 relative px-4 py-2 bg-white rounded-lg font-medium">
                   <span>{program?.name}</span>
                 </div>
               </Link>

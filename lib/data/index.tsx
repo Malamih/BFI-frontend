@@ -48,22 +48,17 @@ export const links: Link[] = [
 export const socialLinks: SocialLink[] = [
   {
     name: "facebook",
-    path: "/",
+    path: "https://www.facebook.com/bfi.iq",
     icon: <FacebookIcon />,
   },
   {
-    name: "twitter",
-    path: "/",
-    icon: <TwitterIcon />,
-  },
-  {
     name: "instagram",
-    path: "/",
+    path: "https://www.instagram.com/bfi.iq",
     icon: <InstagramIcon />,
   },
   {
     name: "linkedin",
-    path: "/",
+    path: "https://www.linkedin.com/company/bfiorg/",
     icon: <LinkedinIcon />,
   },
 ];

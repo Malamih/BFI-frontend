@@ -48,7 +48,7 @@ export const Sidebar = () => {
         <MobileLogo className="md:hidden" />
         <div className="absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-l from-transparent via-white to-transparent"></div>
       </div>
-      <ul className="groups px-3 mt-6 flex-[1] overflow-auto custom-scroll-area">
+      <ul className="groups px-3 mt-6 flex-[1] flex flex-col gap-4 overflow-auto custom-scroll-area">
         {groups.map((group, i) => {
           return (
             <li key={i}>

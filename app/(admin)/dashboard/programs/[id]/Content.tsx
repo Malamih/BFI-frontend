@@ -33,6 +33,10 @@ export const Content = ({ id }: { id: string }) => {
             <p className="mt-1 text-base">{data?.payload?.sub_headline}</p>
           </div>
         </div>
+        <div
+          className="mt-2 mb-4"
+          dangerouslySetInnerHTML={{ __html: data?.payload?.description }}
+        ></div>
         <div className="links flex gap-4 mt-4 mb-4">
           {data?.payload?.applying_link && (
             <div>

@@ -1,3 +1,5 @@
+import { IndustryItems } from "@/app/(admin)/dashboard/ResourcesAndIndustryTools";
+
 export type Page = {
   _id: string;
   pageName: string;
@@ -122,6 +124,7 @@ interface HomeSections {
   bfiCannes: {
     headline: string;
     subheadline: string;
+    image: string;
   };
   about: {
     headline: string;
@@ -142,26 +145,13 @@ interface HomeSections {
   resources_and_industry_tools: {
     headline: string;
     description: string;
-    videos: string[];
+    items: IndustryItems[];
   };
 }
 
 interface IraqiIndustryGuideSections {
   content: string;
-  title: string;
-  gateway: {
-    headline: string;
-    subheadline: string;
-  };
-  guid: {
-    headline: string;
-    offers: Offer[];
-  };
-  expectation: {
-    headline: string;
-    subheadline: string;
-  };
-  suggestion: string;
+  image: string;
 }
 
 interface NewsAndMediaSections {
@@ -169,21 +159,8 @@ interface NewsAndMediaSections {
 }
 
 interface ResourcesSections {
-  title: string;
-  standard_support: {
-    headline: string;
-    subheadline: string;
-  };
-  expectation: {
-    headline: string;
-    expectations: Expectation[];
-  };
-  toolkit: {
-    headline: string;
-    subheadline: string;
-  };
-  suggestion: string;
   content: string;
+  image: string;
 }
 
 // Main page type definitions

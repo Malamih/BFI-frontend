@@ -3,6 +3,7 @@ import { Partner } from "./partners";
 import { Project } from "./projects";
 
 export interface Program {
+  description: string;
   _id?: string;
   background: {
     public_id: string;

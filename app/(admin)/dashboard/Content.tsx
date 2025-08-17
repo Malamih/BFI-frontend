@@ -27,11 +27,7 @@ export const Content = () => {
           page="home"
           sectionName="intro"
         />
-        <SimpleSection
-          section={page?.sections?.bfiCannes}
-          page="home"
-          sectionName="bfiCannes"
-        />
+        <BfiCannes section={page?.sections?.bfiCannes} />
         <About section={page?.sections?.about} />
         <CorePillars
           page="home"

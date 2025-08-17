@@ -36,9 +36,10 @@ export const Hero = ({
             <h1 className="font-bold text-6xl mb-6 max-sm:text-5xl">
               {data?.headline}
             </h1>
-            <p className="font-light text-base mb-6 w-full max-w-xl max-sm:text-sm">
-              {data?.subheadline}
-            </p>
+            <div
+              className="font-light text-base mb-6 w-full max-w-xl max-sm:text-sm"
+              dangerouslySetInnerHTML={{ __html: data?.subheadline as string }}
+            ></div>
           </div>
           <div className="max-sm:justify-center flex items-center gap-2">
             <Link

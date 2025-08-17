@@ -22,6 +22,12 @@ export const Content = ({ id }: { id: string }) => {
           image: page?.background?.secure_url,
         }}
       />
+      <Container className="p-0">
+        <div
+          className="mt-4 mb-6 font-medium text-lg"
+          dangerouslySetInnerHTML={{ __html: page?.description as string }}
+        ></div>
+      </Container>
       <Infos
         data={{
           edition_target: page?.edition_target,

@@ -5,7 +5,7 @@ import Image from "next/image";
 export const CannesEvent = ({
   section,
 }: {
-  section: { headline: string; subheadline: string };
+  section: { headline: string; subheadline: string; image: string };
 }) => {
   return (
     <section>
@@ -21,7 +21,7 @@ export const CannesEvent = ({
           </div>
           <Layer className="opacity-[79%] z-[1]" />
           <Image
-            src={"/home/cannesEvent.webp"}
+            src={section?.image || "/home/cannesEvent.webp"}
             className="object-cover z-0 relative"
             alt="Cannes Event"
             fill

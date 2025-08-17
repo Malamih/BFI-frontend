@@ -1,3 +1,4 @@
+import { extractPublicId } from "@/helpers";
 import ApiClient from "@/lib/apiClient";
 import {
   CloudinaryImageDeleteResponse,
@@ -26,4 +27,20 @@ export const useDeleteFromCloudinary = (
       scss(res);
     },
   });
+};
+
+export const useReplaceImage = () => {
+  const uploadMutation = useUploadToCloudinary();
+  const deleteMutation = useDeleteFromCloudinary(() => {});
+
+  const replaceImage = async (oldImage: string, newImage: FormData) => {
+    const public_id = extractPublicId(oldImage);
+    public_id && (await deleteMutation.mutateAsync({ public_id }));
+    return uploadMutation.mutateAsync(newImage);
+  };
+
+  return {
+    replaceImage,
+    isReplacing: uploadMutation.isPending || deleteMutation.isPending,
+  };
 };

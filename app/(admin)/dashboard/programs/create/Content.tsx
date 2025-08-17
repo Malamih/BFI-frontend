@@ -45,6 +45,7 @@ export const Content = () => {
   const [backgroundImage, setBackgroundImage] = useState<File | "">("");
 
   const [subheadline, setSubheadline] = useState("");
+  const [description, setDescription] = useState("");
 
   const [items, setItems] = useState<Item[]>([
     { name: "Edition Targeters (optional)", key: "edition_target", value: "" },
@@ -203,6 +204,7 @@ export const Content = () => {
       });
 
       // 6. Append other fields
+      if (description) form.append("description", description);
       if (subheadline) form.append("sub_headline", subheadline);
       if (backgroundImage) form.append("background", backgroundImage);
 
@@ -239,6 +241,16 @@ export const Content = () => {
             variant={error?.fieldErrors?.headline ? "destructive" : "default"}
           />
         </div>
+        <div className="subheadline mt-4 mb-4">
+          <RichEditor
+            placeholder="A subheadline for the program"
+            value={subheadline}
+            onChange={setSubheadline}
+            className={clsx({
+              "!border-red-500/50": error?.fieldErrors?.sub_headline,
+            })}
+          />
+        </div>
         <ImageInput
           id="create-program-image-input"
           onChange={(e: any) => setBackgroundImage(e.target?.files[0])}
@@ -252,11 +264,11 @@ export const Content = () => {
         />
         <div className="subheadline mt-4 mb-4">
           <RichEditor
-            placeholder="A subheadline for the program"
-            value={subheadline}
-            onChange={setSubheadline}
+            placeholder="Program description"
+            value={description}
+            onChange={setDescription}
             className={clsx({
-              "!border-red-500/50": error?.fieldErrors?.sub_headline,
+              "!border-red-500/50": error?.fieldErrors?.description,
             })}
           />
         </div>

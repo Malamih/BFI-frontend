@@ -4,6 +4,7 @@ import { VimeoModalPlayer } from "@/components/VimeoPlayer";
 import { extractId } from "@/services/vimeo";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { IndustryItems } from "../(admin)/dashboard/ResourcesAndIndustryTools";
 
 interface Post {
   video: string;
@@ -12,7 +13,7 @@ interface Post {
 export const ResourcesAndIndustry = ({
   section,
 }: {
-  section: { headline: string; description: string; videos: string[] };
+  section: { headline: string; description: string; items: IndustryItems[] };
 }) => {
   const [posts, setPosts] = useState<string[]>([]);
 
@@ -42,7 +43,7 @@ export const ResourcesAndIndustry = ({
           className="grid grid-cols-2 grid-rows-2 max-sm:grid-cols-1 w-full"
           style={{ columnGap: "25px", rowGap: 40 }}
         >
-          {!section?.videos &&
+          {!section?.items &&
             posts?.map((video, i: number) => {
               return (
                 <li
@@ -59,19 +60,27 @@ export const ResourcesAndIndustry = ({
                 </li>
               );
             })}
-          {section?.videos &&
-            section?.videos?.map((video, i: number) => {
+          {section?.items &&
+            section?.items?.map((item, i: number) => {
               return (
                 <li
                   key={i}
                   className="relative rounded-3xl overflow-hidden min-w-[236px] max-xl:min-w-full h-[225px]"
                 >
-                  <VimeoModalPlayer
-                    videoId={extractId(video as string) as string}
-                    containerClassName="w-full rounded-0 h-full"
-                  >
-                    <Layer className="z-10 opacity-60" />
-                  </VimeoModalPlayer>
+                  <Layer className="z-10 opacity-60" />
+                  {item?.type == "video" && (
+                    <VimeoModalPlayer
+                      videoId={extractId(item.value as string) as string}
+                      containerClassName="w-full rounded-0 h-full"
+                    >
+                      <Layer className="z-10 opacity-60" />
+                    </VimeoModalPlayer>
+                  )}
+                  {item?.type == "image" && (
+                    <div className="bg-blue-50">
+                      <Image src={item.value as string} fill alt="image" />
+                    </div>
+                  )}
                 </li>
               );
             })}

@@ -1,11 +1,13 @@
 "use client";
 import { Accordion } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
+import { ImageInput } from "@/components/ui/dashboard/ImageInput";
 import RichEditor from "@/components/ui/dashboard/RichEditor";
 import { SectionEditor } from "@/components/ui/dashboard/SectionEditor";
 import { checkUpdates } from "@/helpers";
+import { useReplaceImage } from "@/services/cloudinary";
 import { useGetPages, useUpdatePageSection } from "@/services/page-content";
-import { ContactPage, IraqiIndustryGuidePage } from "@/types/pages";
+import { IraqiIndustryGuidePage } from "@/types/pages";
 import React, { useEffect, useState } from "react";
 
 export const Content = () => {
@@ -16,14 +18,24 @@ export const Content = () => {
   const { mutateAsync, isPending } = useUpdatePageSection({
     pageName: "iraqiIndustryGuide",
   });
+  const { replaceImage, isReplacing } = useReplaceImage();
+
   const page = data?.payload[0] as IraqiIndustryGuidePage;
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const sections = {
+    let sections: { content?: string; image?: string } = {
       content,
     };
-    console.log(sections.content.slice(0, 500));
+    const form = new FormData(e.target as HTMLFormElement);
+    const image = form.get("image") as File;
+    if (image.size > 0) {
+      await replaceImage(sections?.image as string, form)
+        .then((result) => {
+          sections.image = result.secure_url;
+        })
+        .catch((err) => {});
+    }
     await mutateAsync({
       pageName: "iraqiIndustryGuide",
       sections,
@@ -44,6 +56,13 @@ export const Content = () => {
           sectionId="iraq-industry-guide-editor"
         >
           <form onSubmit={handleSubmit}>
+            <ImageInput
+              id="image-input-in-iraqi-industry"
+              name="image"
+              defaultImage={page?.sections?.image}
+              className="w-full h-[400px] mb-4"
+              onChange={() => setCanSave(true)}
+            />
             <RichEditor
               placeholder="Type Your Content"
               onChange={(val) => {
@@ -54,10 +73,12 @@ export const Content = () => {
             />
             <div className="btn mt-2">
               <Button
-                disabled={isPending || !canSave}
-                className="max-w-[200px] w-full"
+                className="min-w-[120px]"
+                disabled={!canSave || isPending || isReplacing}
               >
-                {isPending ? "Saving..." : "Save"}
+                {isPending && !isReplacing && "Saving..."}
+                {!isPending && isReplacing && "Replacing..."}
+                {!isPending && !isReplacing && "Save"}
               </Button>
             </div>
           </form>

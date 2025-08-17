@@ -40,7 +40,7 @@ export const Content = () => {
       <Container className="flex">
         <Image
           fill
-          src={"/contact/hero.webp"}
+          src={page?.sections?.image || "/contact/hero.webp"}
           className="object-cover z-[0]"
           alt="hero image"
         />
