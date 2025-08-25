@@ -477,7 +477,23 @@ export const Item = ({
 }) => {
   return (
     <div className="item grid gap-2 w-full flex-[1] min-w-xl">
-      <Label>{title}</Label>
+      <div className="flex items-center justify-between">
+        <Label>{title}</Label>
+        <Button
+          size="sm"
+          variant="destructive"
+          type="button"
+          onClick={() =>
+            setItems((prev: Item[]) => {
+              let items = [...prev];
+              items.splice(index, 1);
+              return items;
+            })
+          }
+        >
+          <MinusIcon />
+        </Button>
+      </div>
       <RichEditor
         value={content}
         onChange={(val: string) =>
