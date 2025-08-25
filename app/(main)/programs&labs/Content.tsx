@@ -37,8 +37,8 @@ export const Content = () => {
             );
           })}
           {data && data?.payload?.length < 1 && (
-            <h1 className="text-lg font-medium px-3 py-2 bg-white rounded-lg">
-              No Programs Found
+            <h1 className="text-lg font-medium px-4 py-2 bg-white rounded-lg">
+              There's no programs yet
             </h1>
           )}
         </section>

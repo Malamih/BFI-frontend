@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { ImageInput } from "@/components/ui/dashboard/ImageInput";
 import { Input } from "@/components/ui/dashboard/Input";
 import RichEditor from "@/components/ui/dashboard/RichEditor";
 import { SectionEditor } from "@/components/ui/dashboard/SectionEditor";
@@ -6,6 +7,7 @@ import { Textarea } from "@/components/ui/dashboard/textarea";
 import { VideoFetcher } from "@/components/ui/dashboard/VideoFetcher";
 import { Label } from "@/components/ui/label";
 import { checkUpdates } from "@/helpers";
+import { useReplaceImage } from "@/services/cloudinary";
 import { useUpdatePageSection } from "@/services/page-content";
 import React, { useEffect, useState } from "react";
 
@@ -30,25 +32,39 @@ export const About = ({
   }, [section]);
 
   const { mutate, isPending } = useUpdatePageSection({ pageName: "home" });
-
+  const { replaceImage, isReplacing } = useReplaceImage();
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = new FormData(e.target as HTMLFormElement);
     const headline = form.get("headline") as string;
     const subheadline = form.get("subheadline") as string;
-
-    const data = {
+    const image = form.get("image") as File;
+    const data: {
+      about: {
+        headline?: string;
+        subheadline?: string;
+        description?: string;
+        video?: string;
+      };
+    } = {
       about: {
         ...(headline != section?.headline ? { headline } : {}),
         ...(subheadline != section?.subheadline ? { subheadline } : {}),
         ...(editorVal != section?.description
           ? { description: editorVal }
           : {}),
-        ...(videoLink != section?.description ? { video: videoLink } : {}),
       },
     };
-
-    mutate({ sections: data, pageName: "home" });
+    if (image.size > 0) {
+      replaceImage(section?.video as string, form)
+        .then((result) => {
+          data.about.video = result.secure_url;
+          mutate({ sections: data, pageName: "home" });
+        })
+        .catch((err) => {});
+    } else {
+      mutate({ sections: data, pageName: "home" });
+    }
   };
   return (
     <SectionEditor name="About Section" sectionId="home-about-section">
@@ -85,18 +101,21 @@ export const About = ({
             onChange={setEditorVal}
           />
         </div>
-        <VideoFetcher
-          buttonContent="Get It"
-          imageInputId=""
-          imageInputName=""
-          thumbnail={false}
-          label="Video"
-          defaultLink={section?.video}
-          setVideoLink={setVideoLink}
+        <ImageInput
+          id="image-input-selector-for-about-section"
+          name="image"
+          className="max-w-[300px] min-h-[300px]"
+          defaultImage={section?.video}
+          onChange={() => setCanSave(true)}
         />
         <div className="btn mt-4">
-          <Button disabled={isPending} className="min-w-[120px] max-md:w-full">
-            {isPending ? "Saving..." : "Save"}
+          <Button
+            className="min-w-[120px]"
+            disabled={!canSave || isPending || isReplacing}
+          >
+            {isPending && !isReplacing && "Saving..."}
+            {!isPending && isReplacing && "Replacing..."}
+            {!isPending && !isReplacing && "Save"}
           </Button>
         </div>
       </form>

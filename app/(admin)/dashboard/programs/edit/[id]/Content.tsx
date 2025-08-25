@@ -28,9 +28,8 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 type Item = {
-  name: string;
-  key: string;
-  value: string;
+  title: string;
+  content: string;
 };
 
 type selector = {
@@ -47,22 +46,15 @@ export const Content = ({ id }: { id: string }) => {
   const [awardsInputValue, setAwardsInputValue] = useState("");
   const [showAwardsInput, setShowAwardsInput] = useState(false);
   const [backgroundImage, setBackgroundImage] = useState<File | "">("");
+  const [itemsContentInput, setItemsContentInput] = useState("");
+  const [itemsTitleInput, setItemsTitleInput] = useState("");
 
   const [subheadline, setSubheadline] = useState("");
+  const [description, setDescription] = useState("");
 
   const { data: program, isFetching } = useGetProgram(id);
 
-  const [items, setItems] = useState<Item[]>([
-    { name: "Edition Targeters (optional)", key: "edition_target", value: "" },
-    { name: "Timeline (optional)", key: "timeline", value: "" },
-    { name: "Eligibility (optional)", key: "eligibility", value: "" },
-    { name: "Main Awards (optional)", key: "main_awards", value: "" },
-    {
-      name: "Selection Process (optional)",
-      key: "selection_process",
-      value: "",
-    },
-  ]);
+  const [items, setItems] = useState<Item[]>([]);
 
   const [selectors, setSelectors] = useState<selector[]>([
     {
@@ -105,44 +97,19 @@ export const Content = ({ id }: { id: string }) => {
 
   useEffect(() => {
     if (program) {
-      setSubheadline(program?.payload?.sub_headline);
-      setAwardsList(program?.payload?.awards_list);
-      setItems([
-        {
-          name: "Edition Targeters (optional)",
-          key: "edition_target",
-          value: program?.payload?.edition_target || "",
-        },
-        {
-          name: "Timeline (optional)",
-          key: "timeline",
-          value: program?.payload?.timeline || "",
-        },
-        {
-          name: "Eligibility (optional)",
-          key: "eligibility",
-          value: program?.payload?.eligibility || "",
-        },
-        {
-          name: "Main Awards (optional)",
-          key: "main_awards",
-          value: program?.payload?.main_awards || "",
-        },
-        {
-          name: "Selection Process (optional)",
-          key: "selection_process",
-          value: program?.payload?.selection_process || "",
-        },
-      ]);
+      setSubheadline(program?.payload?.sub_headline || "");
+      setDescription(program?.payload?.description || "");
+      setAwardsList(program?.payload?.awards_list || []);
+      setItems(program?.payload?.items || []);
 
       setSelectors([
         {
           title: "Selected Projects",
           items: [],
           selected_items:
-            program?.payload?.selected_projects?.map((program) => ({
-              key: program._id,
-              value: program.title,
+            program?.payload?.selected_projects?.map((project) => ({
+              key: project._id,
+              value: project.title,
             })) || [],
           key: "selected_projects",
           dialog_title: "Select Projects",
@@ -189,7 +156,7 @@ export const Content = ({ id }: { id: string }) => {
   }, [program]);
 
   useEffect(() => {
-    if (projects && program) {
+    if (projects) {
       setSelectors((prev) => {
         let items = [...prev];
         let index = prev.findIndex((selector) => selector.key == "projects");
@@ -207,10 +174,10 @@ export const Content = ({ id }: { id: string }) => {
         return items;
       });
     }
-  }, [projects, program]);
+  }, [projects]);
 
   useEffect(() => {
-    if (jury && program) {
+    if (jury) {
       setSelectors((prev) => {
         let items = [...prev];
         let index = prev.findIndex((selector) => selector.key == "jury");
@@ -221,21 +188,21 @@ export const Content = ({ id }: { id: string }) => {
         return items;
       });
     }
-  }, [jury, program]);
+  }, [jury]);
 
   useEffect(() => {
-    if (partners && program) {
+    if (partners) {
       setSelectors((prev) => {
         let items = [...prev];
         let index = prev.findIndex((selector) => selector.key == "partners");
-        items[index].items = partners.payload?.map((juror) => ({
-          key: juror?._id,
-          value: juror.name,
+        items[index].items = partners.payload?.map((partner) => ({
+          key: partner?._id,
+          value: partner.name,
         }));
         return items;
       });
     }
-  }, [partners, program]);
+  }, [partners]);
 
   const router = useRouter();
   const {
@@ -249,7 +216,7 @@ export const Content = ({ id }: { id: string }) => {
     const form = new FormData();
 
     try {
-      // 1. Append only filled form inputs (keep old ones on backend if empty)
+      // 1. Append basic form inputs
       const formElements = (e.target as HTMLFormElement).elements;
       Array.from(formElements).forEach((el) => {
         if (
@@ -263,19 +230,13 @@ export const Content = ({ id }: { id: string }) => {
         }
       });
 
-      // 2. Add rich text items
-      items.forEach((item) => {
-        if (item.value.trim() !== "") {
-          form.append(item.key, item.value);
-        }
-      });
-
-      // 3. Append selector arrays
+      // 3. Helper to extract selected keys
       const getSelectedKeys = (key: string): string[] =>
         selectors
           .find((s) => s.key === key)
           ?.selected_items.map((i) => i.key) || [];
 
+      // 4. Prepare array data
       const arrayData = {
         selected_projects: getSelectedKeys("selected_projects"),
         partners: getSelectedKeys("partners"),
@@ -284,19 +245,22 @@ export const Content = ({ id }: { id: string }) => {
         awards_list: awardsList,
       };
 
+      // 5. Append array data properly
       Object.entries(arrayData).forEach(([key, values]) => {
-        if (Array.isArray(values) && values.length > 0) {
+        if (Array.isArray(values)) {
           values.forEach((value) => form.append(key, value));
         }
       });
 
-      // 4. Append optional fields if set
+      // 6. Append other fields
+      if (description) form.append("description", description);
       if (subheadline) form.append("sub_headline", subheadline);
       if (backgroundImage && backgroundImage instanceof File) {
         form.append("background", backgroundImage);
       }
 
-      // 5. Submit update
+      form.append("items", JSON.stringify(items));
+      // 7. Submit with error handling
       await updateProgram(form);
 
       queryClient.invalidateQueries({ queryKey: ["programs"] });
@@ -321,7 +285,7 @@ export const Content = ({ id }: { id: string }) => {
       </div>
       <form onSubmit={submit}>
         <div className="input grid mb-4 gap-2 w-full min-w-sm flex-[1]">
-          <Label>Headline</Label>
+          <Label>Headline (optional)</Label>
           <Input
             placeholder="Enter program headline"
             type="text"
@@ -330,8 +294,18 @@ export const Content = ({ id }: { id: string }) => {
             variant={error?.fieldErrors?.headline ? "destructive" : "default"}
           />
         </div>
+        <div className="subheadline mt-4 mb-4">
+          <RichEditor
+            placeholder="A subheadline for the program (optional)"
+            value={subheadline}
+            onChange={setSubheadline}
+            className={clsx({
+              "!border-red-500/50": error?.fieldErrors?.sub_headline,
+            })}
+          />
+        </div>
         <ImageInput
-          id="create-program-image-input"
+          id="edit-program-image-input"
           onChange={(e: any) => setBackgroundImage(e.target?.files[0])}
           name=""
           className="mb-5 min-h-[300px]"
@@ -344,11 +318,11 @@ export const Content = ({ id }: { id: string }) => {
         />
         <div className="subheadline mt-4 mb-4">
           <RichEditor
-            placeholder="A subheadline for the program"
-            value={subheadline}
-            onChange={setSubheadline}
+            placeholder="Program description (optional)"
+            value={description}
+            onChange={setDescription}
             className={clsx({
-              "!border-red-500/50": error?.fieldErrors?.sub_headline,
+              "!border-red-500/50": error?.fieldErrors?.description,
             })}
           />
         </div>
@@ -388,19 +362,6 @@ export const Content = ({ id }: { id: string }) => {
             />
           </div>
         </div>
-        <ul className="items flex flex-wrap mt-4 gap-4">
-          {items?.map((item, i: number) => {
-            return (
-              <Item
-                title={item.name}
-                key={i}
-                itemKey={item.key}
-                setItems={setItems}
-                items={items}
-              />
-            );
-          })}
-        </ul>
         <ul className="mt-4 flex flex-wrap gap-2">
           {selectors?.map((selector, i: number) => {
             return (
@@ -505,8 +466,68 @@ export const Content = ({ id }: { id: string }) => {
             );
           })}
         </ul>
+        <section className="py-2 px-3 border border-gray-600/50 rounded-sm mt-5">
+          <header className="flex justify-between items-center gap-5">
+            <h1 className="font-semibold">Items List</h1>
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button size={"sm"}>
+                  <PlusIcon />
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Add new Item</DialogTitle>
+                </DialogHeader>
+                <div className="grid gap-2">
+                  <Label>Title</Label>
+                  <Input
+                    placeholder="e.g. Timeline"
+                    value={itemsTitleInput}
+                    onChange={(e) => setItemsTitleInput(e.target.value)}
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <Label>Content</Label>
+                  <RichEditor
+                    placeholder="Item Content"
+                    className="mb-2 w-full max-w-[460px]"
+                    value={itemsContentInput}
+                    onChange={(v) => setItemsContentInput(v)}
+                  />
+                </div>
+                <Button
+                  disabled={itemsTitleInput == "" || itemsContentInput == ""}
+                  onClick={() => {
+                    setItems((prev) => [
+                      ...prev,
+                      { title: itemsTitleInput, content: itemsContentInput },
+                    ]);
+                    setItemsTitleInput("");
+                    setItemsContentInput("");
+                  }}
+                >
+                  Add
+                </Button>
+              </DialogContent>
+            </Dialog>
+          </header>
+          <ul className="items flex flex-wrap mt-4 gap-4">
+            {items?.map((item, i: number) => {
+              return (
+                <Item
+                  title={item.title}
+                  key={i}
+                  index={i}
+                  setItems={setItems}
+                  content={item.content}
+                />
+              );
+            })}
+          </ul>
+        </section>
         <Button className="w-full mt-5" disabled={isPending}>
-          {isPending ? "Editing..." : "Edit"}
+          {isPending ? "Updating..." : "Update"}
         </Button>
       </form>
     </section>
@@ -515,26 +536,41 @@ export const Content = ({ id }: { id: string }) => {
 
 export const Item = ({
   title,
-  itemKey,
+  index,
   setItems,
-  items,
+  content,
 }: {
-  items: Item[];
   title: string;
-  itemKey: string;
+  index: number;
   setItems: React.Dispatch<React.SetStateAction<Item[]>>;
+  content: string;
 }) => {
   return (
     <div className="item grid gap-2 w-full flex-[1] min-w-xl">
-      <Label>{title}</Label>
+      <div className="flex items-center justify-between">
+        <Label>{title}</Label>
+        <Button
+          size="sm"
+          variant="destructive"
+          type="button"
+          onClick={() =>
+            setItems((prev: Item[]) => {
+              let items = [...prev];
+              items.splice(index, 1);
+              return items;
+            })
+          }
+        >
+          <MinusIcon />
+        </Button>
+      </div>
       <RichEditor
-        value={items?.find((item) => item.key == itemKey)?.value}
+        value={content}
         onChange={(val: string) =>
           setItems((prev: Item[]) => {
             let items = [...prev];
-            const index = items.findIndex((i: Item) => i.key === itemKey);
             if (index !== -1) {
-              items[index] = { ...items[index], value: val };
+              items[index] = { ...items[index], content: val };
             }
             return items;
           })

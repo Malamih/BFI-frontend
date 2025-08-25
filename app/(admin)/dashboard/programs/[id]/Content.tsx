@@ -60,69 +60,37 @@ export const Content = ({ id }: { id: string }) => {
           )}
         </div>
         <div className="grid grid-cols-[repeat(auto-fill,minmax(500px,1fr))] gap-4">
-          {data?.payload?.edition_target && (
-            <div className="[&_ul]:[list-style:unset] [&_ul]:ms-4 p-3 border border-gray-500/50 rounded-sm:ms-5 rounded-sm">
-              <h1 className="text-lg font-semibold mb-2">Edition:</h1>
+          {data?.payload?.items?.map((item, i) => {
+            return (
               <div
-                className="content"
-                dangerouslySetInnerHTML={{
-                  __html: data?.payload?.edition_target,
-                }}
-              ></div>
-            </div>
-          )}
-          {data?.payload?.timeline && (
-            <div className="[&_ul]:[list-style:unset] [&_ul]:ms-4 p-3 border border-gray-500/50 rounded-sm:ms-5 rounded-sm">
-              <h1 className="text-lg font-semibold mb-2">Timeline:</h1>
-              <div
-                className="content"
-                dangerouslySetInnerHTML={{
-                  __html: data?.payload?.timeline,
-                }}
-              ></div>
-            </div>
-          )}
-          {data?.payload?.eligibility && (
-            <div className="[&_ul]:[list-style:unset] [&_ul]:ms-4 p-3 border border-gray-500/50 rounded-sm:ms-5 rounded-sm">
-              <h1 className="text-lg font-semibold mb-2">Eligibility:</h1>
-              <div
-                className="content"
-                dangerouslySetInnerHTML={{ __html: data?.payload?.eligibility }}
-              ></div>
-            </div>
-          )}
-          {data?.payload?.main_awards && (
-            <div className="[&_ul]:[list-style:unset] [&_ul]:ms-4 p-3 border border-gray-500/50 rounded-sm:ms-5 rounded-sm">
-              <h1 className="font-bold mb-2 text-lg">Awards:</h1>
-              <div
-                className="content"
-                dangerouslySetInnerHTML={{ __html: data?.payload?.main_awards }}
-              ></div>
-            </div>
-          )}
-          {data?.payload?.selection_process && (
-            <div className="[&_ul]:[list-style:unset] [&_ul]:ms-4 p-3 border border-gray-500/50 rounded-sm:ms-5 rounded-sm">
-              <h1 className="text-lg font-semibold mb-2">Selection Process:</h1>
-              <div
-                className="content"
-                dangerouslySetInnerHTML={{
-                  __html: data?.payload?.selection_process,
-                }}
-              ></div>
-            </div>
-          )}
-          {data?.payload?.selected_projects && (
-            <div className="[&_ul]:[list-style:unset] [&_ul]:ms-4 p-3 border border-gray-500/50 rounded-sm:ms-5 rounded-sm">
-              <h1 className="text-lg font-semibold mb-2">Selected Projects:</h1>
-              <ul>
-                {data?.payload?.selected_projects?.map(
-                  (project: Project, i) => {
-                    return <li key={i}>{project?.title}</li>;
-                  }
-                )}
-              </ul>
-            </div>
-          )}
+                key={i}
+                className="[&_ul]:[list-style:unset] [&_ul]:ms-4 p-3 border border-gray-500/50 rounded-sm:ms-5 rounded-sm"
+              >
+                <h1 className="text-lg font-semibold mb-2">{item.title}:</h1>
+                <div
+                  className="content"
+                  dangerouslySetInnerHTML={{
+                    __html: item?.content,
+                  }}
+                ></div>
+              </div>
+            );
+          })}
+          {data?.payload?.selected_projects &&
+            data?.payload?.selected_projects?.length > 0 && (
+              <div className="[&_ul]:[list-style:unset] [&_ul]:ms-4 p-3 border border-gray-500/50 rounded-sm:ms-5 rounded-sm">
+                <h1 className="text-lg font-semibold mb-2">
+                  Selected Projects:
+                </h1>
+                <ul>
+                  {data?.payload?.selected_projects?.map(
+                    (project: Project, i) => {
+                      return <li key={i}>{project?.title}</li>;
+                    }
+                  )}
+                </ul>
+              </div>
+            )}
         </div>
         <div className="projects-and-jurors flex flex-wrap gap-12 w-full mt-12">
           <ul className="projects h-fit custom-scroll-area max-h-[400px] flex flex-col gap-4 flex-[1] w-full min-w-xl">

@@ -24,9 +24,8 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 type Item = {
-  name: string;
-  key: string;
-  value: string;
+  title: string;
+  content: string;
 };
 
 type selector = {
@@ -43,21 +42,13 @@ export const Content = () => {
   const [awardsInputValue, setAwardsInputValue] = useState("");
   const [showAwardsInput, setShowAwardsInput] = useState(false);
   const [backgroundImage, setBackgroundImage] = useState<File | "">("");
+  const [itemsContentInput, setItemsContentInput] = useState("");
+  const [itemsTitleInput, setItemsTitleInput] = useState("");
 
   const [subheadline, setSubheadline] = useState("");
   const [description, setDescription] = useState("");
 
-  const [items, setItems] = useState<Item[]>([
-    { name: "Edition Targeters (optional)", key: "edition_target", value: "" },
-    { name: "Timeline (optional)", key: "timeline", value: "" },
-    { name: "Eligibility (optional)", key: "eligibility", value: "" },
-    { name: "Main Awards (optional)", key: "main_awards", value: "" },
-    {
-      name: "Selection Process (optional)",
-      key: "selection_process",
-      value: "",
-    },
-  ]);
+  const [items, setItems] = useState<Item[]>([]);
 
   const [selectors, setSelectors] = useState<selector[]>([
     {
@@ -174,13 +165,6 @@ export const Content = () => {
         }
       });
 
-      // 2. Add items with non-empty value
-      items.forEach((item) => {
-        if (item.value.trim() !== "") {
-          form.append(item.key, item.value);
-        }
-      });
-
       // 3. Helper to extract selected keys
       const getSelectedKeys = (key: string): string[] =>
         selectors
@@ -207,7 +191,10 @@ export const Content = () => {
       if (description) form.append("description", description);
       if (subheadline) form.append("sub_headline", subheadline);
       if (backgroundImage) form.append("background", backgroundImage);
-
+      items.forEach((item, index) => {
+        form.append(`items[${index}][title]`, item.title);
+        form.append(`items[${index}][content]`, item.content);
+      });
       // 7. Submit with error handling
       await createProgram(form);
 
@@ -233,7 +220,7 @@ export const Content = () => {
       </div>
       <form onSubmit={submit}>
         <div className="input grid mb-4 gap-2 w-full min-w-sm flex-[1]">
-          <Label>Headline</Label>
+          <Label>Headline (optional)</Label>
           <Input
             placeholder="Enter program headline"
             type="text"
@@ -243,7 +230,7 @@ export const Content = () => {
         </div>
         <div className="subheadline mt-4 mb-4">
           <RichEditor
-            placeholder="A subheadline for the program"
+            placeholder="A subheadline for the program (optional)"
             value={subheadline}
             onChange={setSubheadline}
             className={clsx({
@@ -264,7 +251,7 @@ export const Content = () => {
         />
         <div className="subheadline mt-4 mb-4">
           <RichEditor
-            placeholder="Program description"
+            placeholder="Program description (optional)"
             value={description}
             onChange={setDescription}
             className={clsx({
@@ -305,18 +292,6 @@ export const Content = () => {
             />
           </div>
         </div>
-        <ul className="items flex flex-wrap mt-4 gap-4">
-          {items?.map((item, i: number) => {
-            return (
-              <Item
-                title={item.name}
-                key={i}
-                itemKey={item.key}
-                setItems={setItems}
-              />
-            );
-          })}
-        </ul>
         <ul className="mt-4 flex flex-wrap gap-2">
           {selectors?.map((selector, i: number) => {
             return (
@@ -421,6 +396,66 @@ export const Content = () => {
             );
           })}
         </ul>
+        <section className="py-2 px-3 border border-gray-600/50 rounded-sm mt-5">
+          <header className="flex justify-between items-center gap-5">
+            <h1 className="font-semibold">Items List</h1>
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button size={"sm"}>
+                  <PlusIcon />
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Add new Item</DialogTitle>
+                </DialogHeader>
+                <div className="grid gap-2">
+                  <Label>Title</Label>
+                  <Input
+                    placeholder="e.g. Timeline"
+                    value={itemsTitleInput}
+                    onChange={(e) => setItemsTitleInput(e.target.value)}
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <Label>Content</Label>
+                  <RichEditor
+                    placeholder="Item Content"
+                    className="mb-2 w-full max-w-[460px]"
+                    value={itemsContentInput}
+                    onChange={(v) => setItemsContentInput(v)}
+                  />
+                </div>
+                <Button
+                  disabled={itemsTitleInput == "" || itemsContentInput == ""}
+                  onClick={() => {
+                    setItems((prev) => [
+                      ...prev,
+                      { title: itemsTitleInput, content: itemsContentInput },
+                    ]);
+                    setItemsTitleInput("");
+                    setItemsContentInput("");
+                  }}
+                >
+                  Add
+                </Button>
+              </DialogContent>
+            </Dialog>
+          </header>
+          <ul className="items flex flex-wrap mt-4 gap-4">
+            {items?.map((item, i: number) => {
+              return (
+                <Item
+                  title={item.title}
+                  key={i}
+                  index={i}
+                  setItems={setItems}
+                  content={item.content}
+                />
+              );
+            })}
+          </ul>
+        </section>
         <Button className="w-full mt-5" disabled={isPending}>
           {isPending ? "Creating..." : "Create"}
         </Button>
@@ -431,23 +466,25 @@ export const Content = () => {
 
 export const Item = ({
   title,
-  itemKey,
+  index,
   setItems,
+  content,
 }: {
   title: string;
-  itemKey: string;
+  index: number;
   setItems: React.Dispatch<React.SetStateAction<Item[]>>;
+  content: string;
 }) => {
   return (
     <div className="item grid gap-2 w-full flex-[1] min-w-xl">
       <Label>{title}</Label>
       <RichEditor
+        value={content}
         onChange={(val: string) =>
           setItems((prev: Item[]) => {
             let items = [...prev];
-            const index = items.findIndex((i: Item) => i.key === itemKey);
             if (index !== -1) {
-              items[index] = { ...items[index], value: val };
+              items[index] = { ...items[index], content: val };
             }
             return items;
           })

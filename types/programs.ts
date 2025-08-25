@@ -14,11 +14,7 @@ export interface Program {
   sub_headline: string;
   applying_link?: string;
   contact_link?: string;
-  edition_target?: string;
-  timeline?: string;
-  eligibility?: string;
-  main_awards?: string;
-  selection_process?: string;
+  items: { title: string; content: string }[];
   selected_projects?: Project[]; // إذا كانت ID واحدة، غيره حسب الحاجة
   projects: Project[];
   jury: Juror[];

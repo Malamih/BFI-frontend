@@ -30,12 +30,8 @@ export const Content = ({ id }: { id: string }) => {
       </Container>
       <Infos
         data={{
-          edition_target: page?.edition_target,
-          awards: page?.main_awards,
-          eligibility: page?.eligibility,
           selected_projects: page?.selected_projects,
-          selection_process: page?.selection_process,
-          timeline: page?.timeline,
+          items: page?.items,
         }}
         id={page?._id as string}
       />

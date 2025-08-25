@@ -42,26 +42,30 @@ export const Hero = ({
             ></div>
           </div>
           <div className="max-sm:justify-center flex items-center gap-2">
-            <Link
-              href={data?.applying_link || "/contact"}
-              className="min-w-[150px] max-sm:min-w-fit"
-            >
-              <Button size={"lg"} className="w-full">
-                Apply Now
-              </Button>
-            </Link>
-            <Link
-              href={data?.contact_link || "/contact"}
-              className="min-w-[150px] max-sm:min-w-fit"
-            >
-              <Button
-                variant={"outline"}
-                size={"lg"}
-                className="bg-transparent w-full"
+            {data?.applying_link && (
+              <Link
+                href={data?.applying_link || "/contact"}
+                className="min-w-[150px] max-sm:min-w-fit"
               >
-                Contact us
-              </Button>
-            </Link>
+                <Button size={"lg"} className="w-full">
+                  Apply Now
+                </Button>
+              </Link>
+            )}
+            {data?.contact_link && (
+              <Link
+                href={data?.contact_link || "/contact"}
+                className="min-w-[150px] max-sm:min-w-fit"
+              >
+                <Button
+                  variant={"outline"}
+                  size={"lg"}
+                  className="bg-transparent w-full"
+                >
+                  Contact us
+                </Button>
+              </Link>
+            )}
           </div>
         </div>
       </Container>

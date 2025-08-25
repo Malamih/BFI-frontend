@@ -8,11 +8,7 @@ export const Infos = ({
   id,
 }: {
   data: {
-    edition_target?: string;
-    timeline?: string;
-    eligibility?: string;
-    awards?: string;
-    selection_process?: string;
+    items?: { title: string; content: string }[];
     selected_projects?: Project[];
   };
   id: string;
@@ -20,22 +16,9 @@ export const Infos = ({
   return (
     <section className="my-20">
       <Container className="grid grid-cols-3 max-2xl:grid-cols-2 max-lg:grid-cols-1">
-        {data?.edition_target && (
-          <Info title="Edition Targeters" content={data.edition_target} />
-        )}
-
-        {data?.timeline && <Info title="Timeline" content={data.timeline} />}
-
-        {data?.eligibility && (
-          <Info title="Eligibility" content={data.eligibility} />
-        )}
-
-        {data?.awards && <Info title="Awards" content={data.awards} />}
-
-        {data?.selection_process && (
-          <Info title="Selection Process" content={data.selection_process} />
-        )}
-
+        {data.items?.map((item, i) => {
+          return <Info title={item.title} key={i} content={item.content} />;
+        })}
         {data?.selected_projects && data.selected_projects.length > 0 && (
           <div className="info [&_ul]:[list-style:unset] [&_ul]:ms-4 w-full p-8 border-b border-b-[#D7D7D7] border-r border-r[#D7D7D7] max-lg:w-full [&_p]:w-full [&_p]:max-w-xl">
             <h2 className="font-semibold text-2xl pb-2 border-b-4 border-b-primary w-fit mb-10">

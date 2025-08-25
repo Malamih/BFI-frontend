@@ -40,13 +40,9 @@ export const About = ({
         </div>
         <div className="video relative min-w-[387px] bg-black z-10 h-[470px] max-lg:min-w-full translate-y-12 max-lg:w-full">
           {section?.video && (
-            <VimeoModalPlayer
-              videoId={extractId(section?.video as string) as string}
-              containerClassName="w-full rounded-0 h-full"
-            >
-              <Layer className="z-10 opacity-60 bg-black" />
-            </VimeoModalPlayer>
+            <Image src={section?.video} fill alt="about image" className="relative z-10" />
           )}
+          <Layer className="z-10 opacity-30 bg-black" />
           <LogoGridHorizontal className="absolute top-12 -right-12 w-[150px] z-0" />
         </div>
       </Container>
